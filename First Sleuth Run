@@ -1,0 +1,99 @@
+#Some fixes:
+wget -O ../Trapnell_results.zip 'https://www.dropbox.com/s/eqx3jmylgns4wd3/Trapnell_results.zip?dl=1'
+
+#This dropbox link is dead, instead use: https://figshare.com/articles/dataset/Trapnell_results_zip/6866606/1 
+s2c <- read.table(file.path("..", "metadata", "hiseq_info.txt"), header = TRUE, stringsAsFactors=FALSE)
+
+#“metadata” is missing from the new link
+#Create “metadata folder, create a txt file and paste:
+#"sample" "condition"
+#SRR493366  scramble
+#SRR493367  scramble
+#SRR493368  scramble
+#SRR493369   HOXA1KD
+#SRR493370   HOXA1KD
+#SRR493371   HOXA1KD
+
+source("http://bioconductor.org/biocLite.R") doesnt work on R 3.5 and greater
+For R 4.1 and later
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+
+BiocManager::install("biomaRt")
+
+#Tutorial:
+#Load in kallisto data
+#Load sleuth
+suppressMessages({
+  library("sleuth")
+})
+
+#Create a variable to store results and specify its file path
+sample_id <- dir(file.path("..", "results"))
+
+#Create a list of paths to the kallisto results
+kal_dirs <- file.path("..", "results", sample_id, "kallisto")
+
+#Load in table with sample names and corresponding conditions
+s2c <- read.table(file.path("..", "metadata", "hiseq_info.txt"), header = TRUE, stringsAsFactors=FALSE)
+s2c <- dplyr::select(s2c, sample = run_accession, condition)
+
+#Append sample directories to a new column so each sample is associated with a file path
+s2c <- dplyr::mutate(s2c, path = kal_dirs)
+
+#Initialize sleuth object
+so <- sleuth_prep(s2c, extra_bootstrap_summary = TRUE)
+
+#Fit full model
+so <- sleuth_fit(so, ~condition, 'full')
+
+#Fit reduced model
+so <- sleuth_fit(so, ~1, 'reduced')
+
+#Perform test to compare full and reduced models
+so <- sleuth_lrt(so, 'reduced', 'full')
+
+#Examine model if ya want
+models(so)
+
+#View test results (displays the top 20 significant genes with a (Benjamini-Hochberg multiple testing corrected) q-value <= 0.05.)
+sleuth_table <- sleuth_results(so, 'reduced:full', 'lrt', show_all = FALSE)
+sleuth_significant <- dplyr::filter(sleuth_table, qval <= 0.05)
+head(sleuth_significant, 20)
+
+#Plot onto graph
+plot_bootstrap(so, "ENST00000263734", units = "est_counts", color_by = "condition")
+
+#Collect gene names from ensembl
+mart <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL",
+  dataset = "hsapiens_gene_ensembl",
+  host = 'ensembl.org')
+t2g <- biomaRt::getBM(attributes = c("ensembl_transcript_id", "ensembl_gene_id",
+    "external_gene_name"), mart = mart)
+t2g <- dplyr::rename(t2g, target_id = ensembl_transcript_id,
+  ens_gene = ensembl_gene_id, ext_gene = external_gene_name)
+
+#Add gene names into sleuth table
+so <- sleuth_prep(s2c, target_mapping = t2g)
+so <- sleuth_fit(so, ~condition, 'full')
+so <- sleuth_fit(so, ~1, 'reduced')
+so <- sleuth_lrt(so, 'reduced', 'full')
+
+
+#Generate sleuth live site to interact with results
+
+#Create pca plot to visualize samples
+plot_pca(so, color_by = 'condition')
+
+#View count distributions per sample or condition
+plot_group_density(so, use_filtered = TRUE, units = "est_counts",
+  trans = "log", grouping = setdiff(colnames(so$sample_to_covariates),
+  "sample"), offset = 1)
+
+#Done!
+
+
+
+
+
