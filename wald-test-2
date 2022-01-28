@@ -1,0 +1,32 @@
+
+#make new sleuth object with a log2 transformation rather than a natural log transformation
+#the beta values will properly represent fold change!
+so2 <- sleuth_prep(s2c, 
+                  full_model = ~condition, 
+                  read_bootstrap_tpm = TRUE,
+                  extra_bootstrap_summary = TRUE,
+                  transformation_function = function(x) log2(x + 0.5))  
+                  
+                  
+#fit model
+so2 <- sleuth_fit(so2)
+
+#check model status (correct forumula and coefficients)
+#the level not shown is the base level (should be control)
+models(so2)
+
+#run if incorrect base level
+#otherwise DO NOT RUN!
+#this is a random internet example since I did not need to do this
+summarydata$sampletype <- relevel(summarydata$sampletype, ref = "MOV10_knockdown")
+
+#run wald test
+oe <- sleuth_wt(so2, 
++                 which_beta = 'conditionNts1')
+
+#create and view results table
+sleuth_results_oe <- sleuth_results(oe, 
++                                     test = 'conditionNts1', 
++                                     show_all = TRUE)
+View(sleuth_results_oe)
+
