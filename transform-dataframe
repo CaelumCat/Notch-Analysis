@@ -1,0 +1,20 @@
+#transcript id to gene id
+
+#create new columns in dataframe
+sleuth_table_wt$symbol <- ""
+sleuth_table_wt$gene_id <- ""
+
+#match each value in a column to another chosen column of a secondary dataframe
+#add or replace a column of data
+for (i in 1:nrow(sleuth_table_wt)) { 
+  id <- toString(sleuth_table_wt[i,'target_id'])
+  row <- which(fbtr_to_fbgn_2$transcript_ID == id ,arr.ind=TRUE)
+  sleuth_table_wt[i,'symbol'] <- toString(fbtr_to_fbgn_2[row, 'gene_symbol'])
+}
+
+#same thing, different column
+for (i in 1:nrow(sleuth_table_wt)) { 
+  id <- toString(sleuth_table_wt[i,'target_id'])
+  row <- which(fbtr_to_fbgn_2$transcript_ID == id ,arr.ind=TRUE)
+  sleuth_table_wt[i,'gene_id'] <- toString(fbtr_to_fbgn_2[row, 'gene_ID'])
+}
