@@ -1,0 +1,9 @@
+#turn a column from dataframe into a simple text file (one item per line)
+for (i in 1:nrow(sleuth_significant))
+  write(sleuth_significant[i, 'symbol'], file = "sig_output.txt",
+        append = TRUE, sep = "\n")
+
+
+for (i in 1:nrow(sleuth_significant))
+  write(sleuth_significant[i, 'symbol'], file = "output_bkgrd.txt",
+        append = TRUE, sep = "\n")
