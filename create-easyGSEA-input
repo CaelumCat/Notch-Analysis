@@ -1,0 +1,44 @@
+#create DEG file for easyGSEA
+#need dataframe (csv or tsv) with genes, logFC and p-value
+
+#specify number of rows
+N <- 24698
+
+#create dataframe by naming columns and putting N rows in each
+easyGSEA_input <- data.frame(genes   = numeric(N),
+                                logFC = numeric(N),
+                                p_value = numeric(N))
+
+#add gene symbols from existing table
+easyGSEA_input$genes <- sleuth_table$symbol
+
+
+#add logFC based on existing data (from wald test)
+for (i in 1:nrow(easyGSEA_input)) { 
+  sym <- toString(easyGSEA_input[i,'genes'])
+  row <- which(sleuth_results_wt$symbol == sym ,arr.ind=TRUE)
+  row <- row[1]
+  easyGSEA_input[i,'logFC'] <- toString(sleuth_results_wt[row, 'b'])
+}
+
+#add p-value based on existing data (from likelihood ratio test)
+for (i in 1:nrow(easyGSEA_input)) { 
+  sym <- toString(easyGSEA_input[i,'genes'])
+  row <- which(sleuth_table$symbol == sym ,arr.ind=TRUE)
+  row <- row[1]
+  easyGSEA_input[i,'p_value'] <- toString(sleuth_table[row, 'pval'])
+}
+
+#create gene_id column and add to it
+easyGSEA_input$gene_id <- ""
+for (i in 1:nrow(easyGSEA_input)) { 
+  sym <- toString(easyGSEA_input[i,'genes'])
+  row <- which(sleuth_table$symbol == sym ,arr.ind=TRUE)
+  row <- row[1]
+  easyGSEA_input[i,'gene_id'] <- toString(sleuth_table[row, 'gene_id'])
+}
+
+#write to .csv
+#easyGSEA is nice and ignored all the gene duplicates
+#remember to remove duplicate genes if using other GSEA program
+write.csv(easyGSEA_input,"easyGSEA_input.csv", row.names = FALSE)
