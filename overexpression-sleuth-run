@@ -1,0 +1,23 @@
+#run kallstio
+
+#some variable info
+#so2 is underexpression Wald Test
+#sleuth_table is underexpression lrt full table
+#sleuth_table_wt is underexpression wald test full table
+
+
+
+library("sleuth")
+
+#create csv metadata in txt file
+oe_metadata <- read.csv("oe_metadata.txt", header = TRUE)
+
+#initialize sleuth object
+> so_oe <- sleuth_prep(oe_metadata, extra_bootstrap_summary = TRUE)
+
+#fit full model
+so_oe <- sleuth_fit(so_oe, ~condition, 'full')
+
+#fit reduced model
+so_oe <- sleuth_fit(so_oe, ~1, 'reduced')
+
