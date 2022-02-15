@@ -3,7 +3,10 @@
 #some variable info
 #so2 is underexpression Wald Test
 #sleuth_table is underexpression lrt full table
-#sleuth_table_wt is underexpression wald test full table
+#sleuth_results_wt is underexpression wald test full table
+#sleuth_table_wt is the same table
+#oe is wald test from so2 (bad name)
+
 
 
 
@@ -20,4 +23,45 @@ so_oe <- sleuth_fit(so_oe, ~condition, 'full')
 
 #fit reduced model
 so_oe <- sleuth_fit(so_oe, ~1, 'reduced')
+
+#likelihood ratio test
+so_oe <- sleuth_lrt(so_oe, 'reduced', 'full')
+
+#create table of results
+oe_sleuth_table <- sleuth_results(so_oe, 'reduced:full', 'lrt', show_all = FALSE)
+> View(oe_sleuth_table)
+
+#modify script to add on gene names and ids
+                oe_sleuth_table$symbol <- ""
+                oe_sleuth_tablet$gene_id <- ""
+
+                for (i in 1:nrow(oe_sleuth_table)) { 
+                  id <- toString(oe_sleuth_table[i,'target_id'])
+                  row <- which(fbtr_to_fbgn_2$transcript_ID == id ,arr.ind=TRUE)
+                  oe_sleuth_table[i,'symbol'] <- toString(fbtr_to_fbgn_2[row, 'gene_symbol'])
+                }
+
+                for (i in 1:nrow(oe_sleuth_table)) { 
+                  id <- toString(oe_sleuth_table[i,'target_id'])
+                  row <- which(fbtr_to_fbgn_2$transcript_ID == id ,arr.ind=TRUE)
+                  oe_sleuth_table[i,'gene_id'] <- toString(fbtr_to_fbgn_2[row, 'gene_ID'])
+                }
+
+ #completed table!
+ 
+ #add NCBI gene IDs
+ library("AnnotationDbi")
+ library("org.Dm.eg.db")
+ oe_sleuth_table$entrez <- mapIds(org.Dm.eg.db, 
++                      keys=oe_sleuth_table$gene_id, 
++                      column="ENTREZID", 
++                      keytype="ENSEMBL",
++                      multiVals="first")
+
+#add gene names
+oe_sleuth_table$name <- mapIds(org.Dm.eg.db, 
++                      keys=oe_sleuth_table$gene_id, 
++                      column="GENENAME", 
++                      keytype="ENSEMBL",
++                      multiVals="first")
 
