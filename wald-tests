@@ -1,4 +1,6 @@
 
+
+#wald test for underexpression data
 #make new sleuth object with a log2 transformation rather than a natural log transformation
 #the beta values will properly represent fold change!
 so2 <- sleuth_prep(s2c, 
@@ -30,3 +32,19 @@ sleuth_results_oe <- sleuth_results(oe,
 +                                     show_all = TRUE)
 View(sleuth_results_oe)
 
+#-------------------------
+#wald test for overexpression data
+
+so_oe2 <- sleuth_prep(oe_metadata, 
++                    full_model = ~condition, 
++                    read_bootstrap_tpm = TRUE,
++                    extra_bootstrap_summary = TRUE,
++                    transformation_function = function(x) log2(x + 0.5)) 
+
+so_oe2 <- sleuth_fit(so_oe2)
+
+models(so_oe2)
+
+so_oe2 <- sleuth_wt(so_oe2, which_beta = 'conditionNts1')
+
+sleuth_results_wt_oe <- sleuth_results(so_oe2, test = 'conditionNts1', show_all = TRUE)
