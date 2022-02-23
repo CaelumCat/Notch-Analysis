@@ -1,0 +1,192 @@
+#create combined table
+
+#first just stack dataframes together keeping the columns sorted by ranking
+combined_table1 <- easyGSEA_input
+
+#doesn't work since theres a different number of rows
+#combined_table$oe_genes <- oe_sleuth_table$symbol
+#combined_table$oe_logFC <- sleuth_results_wt_oe$b
+
+#imported a function that can bypass this
+combined_table1 <- addToDF(combined_table1, oe_sleuth_table$symbol, "oe_genes")
+combined_table1 <- addToDF(combined_table1, sleuth_results_wt_oe$b, "oe_logFC")
+combined_table1 <- addToDF(combined_table1, oe_sleuth_table$pval, "oe_p_value")
+combined_table1 <- addToDF(combined_table1, oe_sleuth_table$qval, "oe_q_value")
+
+combined_table1 <- addToDF(combined_table1, sleuth_table$qval, "ue_q_value")
+
+#reorder columns
+col_order <- c("genes", "logFC","p_value", "ue_q_value", "gene_id",
+               "oe_genes", "oe_logFC","oe_p_value", "oe_q_value")
+combined_table1 <- combined_table1[, col_order]
+
+#the function I googled
+addToDF <- function(df, v, col_name){
+  nRow <- nrow(df)
+  lngth <- length(v)
+  if(nRow > lngth){
+    length(v) <- nRow
+  }else if(nRow < lngth){
+    df[(nRow+1):lngth, ] <- NA
+  }
+  df_new<-cbind(df,v)
+  colnames(df_new)[ncol(df_new)]=col_name
+  return(df_new)
+}
+
+
+##########################################
+
+
+#now combine the tables again such that each gene gets one row
+#consider rankings from both tables
+oe_component <- easyGSEA_input_oe
+ue_component <- easyGSEA_input
+
+#add a rank column
+oe_component$oe_rank <- c(1:nrow(oe_component))
+ue_component$ue_rank <- c(1:nrow(ue_component))
+
+#delete extra columns
+oe_component$gene_id <- NULL
+oe_component$entrez_id <- NULL
+
+
+combined_table_rankings <- oe_component
+
+#add underexpression rank by gene symbol
+combined_table_rankings$ue_rank <- ""
+
+#note, this only adds the lowest rank present in the underexpression data to the corresponding gene symbol
+for (i in 1:nrow(combined_table_rankings)) { 
+  id <- toString(combined_table_rankings[i,'genes'])
+  row <- which(ue_component$genes == id ,arr.ind=TRUE)
+  row <- row[1]
+  combined_table_rankings[i,'ue_rank'] <- toString(ue_component[row, 'ue_rank'])
+}
+
+#reorder table based on combined rankings
+combined_table_rankings$combined_rank <- ""
+
+for (i in 1:nrow(combined_table_rankings)) { 
+  c_rank <- ( as.numeric(combined_table_rankings[i,"oe_rank"]) + as.numeric(combined_table_rankings[i,"ue_rank"]) )
+  combined_table_rankings[i, "combined_rank"] = c_rank 
+}
+
+#reorder columns
+col_order1 <- c("genes", "combined_rank", "oe_rank", "ue_rank", "logFC","p_value")
+combined_table_rankings <- combined_table_rankings[, col_order1]
+
+best_rankings <- dplyr::filter(combined_table_rankings, as.numeric(combined_rank) <= 250)
+
+
+#############################
+
+
+#add in the q and p values for further analysis
+
+#create new table relabel columns
+full_combined_table <- combined_table_rankings
+full_combined_table$oe_logFC <- full_combined_table$logFC
+full_combined_table$oe_p_value <- full_combined_table$p_value
+full_combined_table$logFC <- NULL
+full_combined_table$p_value <- NULL
+
+#add in oe_q_value
+full_combined_table$oe_q_value <- ""
+
+for (i in 1:nrow(full_combined_table)) { 
+  id <- toString(full_combined_table[i,'genes'])
+  row <- which(oe_sleuth_table$symbol == id ,arr.ind=TRUE)
+  row <- row[1]
+  full_combined_table[i,'oe_q_value'] <- toString(oe_sleuth_table[row, 'qval'])
+}
+
+
+#add ue_q_value
+full_combined_table$ue_q_value <- ""
+for (i in 1:nrow(full_combined_table)) { 
+  id <- toString(full_combined_table[i,'genes'])
+  row <- which(sleuth_table$symbol == id ,arr.ind=TRUE)
+  row <- row[1]
+  full_combined_table[i,'ue_q_value'] <- toString(sleuth_table[row, 'qval'])
+}
+
+#add ue_logFC
+full_combined_table$ue_logFC <- ""
+for (i in 1:nrow(full_combined_table)) { 
+  id <- toString(full_combined_table[i,'genes'])
+  row <- which(sleuth_results_wt$symbol == id ,arr.ind=TRUE)
+  row <- row[1]
+  full_combined_table[i,'ue_logFC'] <- toString(sleuth_results_wt[row, 'b'])
+}
+
+#add ue_p_value
+full_combined_table$ue_p_value <- ""
+for (i in 1:nrow(full_combined_table)) { 
+  id <- toString(full_combined_table[i,'genes'])
+  row <- which(sleuth_table$symbol == id ,arr.ind=TRUE)
+  row <- row[1]
+  full_combined_table[i,'ue_p_value'] <- toString(sleuth_table[row, 'pval'])
+}
+
+#addColumn(dataframe = full_combined_table, col_name = "ue_p_value", 
+#          ref_col1 = "genes", ref_col2 = symbol, 
+#          ref_dataframe = sleuth_table, col_to_add = "pval")
+
+
+################################
+
+#new table only with q-values < 0.001 in both datasets
+filter1 <- dplyr::filter(full_combined_table, ue_q_value <= 0.001)
+low_q_genes_0.001 <- dplyr::filter(filter1, oe_q_value <= 0.001)
+
+#new table only with q-values < 0.01 in both datasets
+filter2 <- dplyr::filter(full_combined_table_q, ue_q_value <= 0.01)
+low_q_genes_0.01 <- dplyr::filter(filter2, oe_q_value <= 0.01)
+
+
+
+#reorder columns
+full_combined_table_q <- full_combined_table
+col_order1 <- c("genes", "oe_q_value", "ue_q_value", "combined_rank", "oe_rank", "ue_rank", "oe_logFC","oe_p_value", "ue_logFC","ue_p_value")
+full_combined_table_q <- full_combined_table_q[, col_order1]
+
+full_combined_table_q$q_add <- ""
+for (i in 1:nrow(full_combined_table_q)) { 
+  q_sum <- as.numeric(full_combined_table_q[i,"oe_q_value"]) + as.numeric(full_combined_table_q[i,"ue_q_value"])
+  full_combined_table_q[i,'q_add'] <- q_sum
+}
+
+#reorder columns again
+col_order2 <- c("genes", "q_add", "oe_q_value", "ue_q_value", "combined_rank", "oe_rank", "ue_rank", "oe_logFC","oe_p_value", "ue_logFC","ue_p_value")
+full_combined_table_q <- full_combined_table_q[, col_order2]
+
+
+###################
+
+#sort by lowest/highest fold change
+
+full_combined_table_fc <- full_combined_table_q
+
+full_combined_table_fc$logFC_sum <- ""
+for (i in 1:nrow(full_combined_table_fc)) { 
+  fc_add <- abs(as.numeric(full_combined_table_fc[i,"oe_logFC"])) + abs(as.numeric(full_combined_table_fc[i,"ue_logFC"]))
+  full_combined_table_fc[i,'logFC_sum'] <- fc_add
+}
+
+high_fc <-  dplyr::filter(full_combined_table_fc, as.numeric(logFC_sum) >= 9)
+
+
+
+#adds column (named col_name) to dataframe using a reference column to match data with
+#doesn't work yet :(
+addColumn <- function(dataframe, col_name, ref_col1, ref_col2, ref_dataframe, col_to_add){
+  dataframe$col_name <- ""
+  for (i in 1:nrow(dataframe)) { 
+    id <- toString(dataframe[i,ref_col1])
+    row <- which(ref_dataframe$ref_col2 == id ,arr.ind=TRUE)
+    row <- row[1]
+    dataframe[i,col_name] <- toString(ref_dataframe[row, col_to_add])
+  }
+}
