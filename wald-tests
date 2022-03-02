@@ -23,14 +23,16 @@ models(so2)
 summarydata$sampletype <- relevel(summarydata$sampletype, ref = "MOV10_knockdown")
 
 #run wald test
-oe <- sleuth_wt(so2, 
+#I originally named this sleuth object "oe" but changed it to so2 when I realized oe stands for overepxression
+so2 <- sleuth_wt(so2, 
 +                 which_beta = 'conditionNts1')
 
 #create and view results table
-sleuth_results_oe <- sleuth_results(oe, 
+#I originally named this file sleuth_results_oe but changed the name to sleuth_results_wt since I realized oe stands for overexpression
+sleuth_results_wt <- sleuth_results(so2, 
 +                                     test = 'conditionNts1', 
 +                                     show_all = TRUE)
-View(sleuth_results_oe)
+View(sleuth_results_wt)
 
 #-------------------------
 #wald test for overexpression data
