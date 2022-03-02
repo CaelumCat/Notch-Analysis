@@ -141,10 +141,15 @@ for (i in 1:nrow(full_combined_table)) {
 filter1 <- dplyr::filter(full_combined_table, ue_q_value <= 0.001)
 low_q_genes_0.001 <- dplyr::filter(filter1, oe_q_value <= 0.001)
 
+
+#somethin up with this table, don't use
+#some of the q values seem off, like CG14011
 #new table only with q-values < 0.01 in both datasets
 filter2 <- dplyr::filter(full_combined_table_q, ue_q_value <= 0.01)
 low_q_genes_0.01 <- dplyr::filter(filter2, oe_q_value <= 0.01)
 
+filter3 <- dplyr::filter(full_combined_table_q, ue_q_value <= 0.05)
+low_q_genes_0.05 <- dplyr::filter(filter3, oe_q_value <= 0.05)
 
 
 #reorder columns
@@ -157,6 +162,13 @@ for (i in 1:nrow(full_combined_table_q)) {
   q_sum <- as.numeric(full_combined_table_q[i,"oe_q_value"]) + as.numeric(full_combined_table_q[i,"ue_q_value"])
   full_combined_table_q[i,'q_add'] <- q_sum
 }
+
+full_combined_table_q$q_product <- ""
+for (i in 1:nrow(full_combined_table_q)) { 
+  q_product <- ( as.numeric(full_combined_table_q[i,"oe_q_value"]) * as.numeric(full_combined_table_q[i,"ue_q_value"]) )
+  full_combined_table_q[i,'q_product'] <- q_product
+}
+
 
 #reorder columns again
 col_order2 <- c("genes", "q_add", "oe_q_value", "ue_q_value", "combined_rank", "oe_rank", "ue_rank", "oe_logFC","oe_p_value", "ue_logFC","ue_p_value")
@@ -190,3 +202,75 @@ addColumn <- function(dataframe, col_name, ref_col1, ref_col2, ref_dataframe, co
     dataframe[i,col_name] <- toString(ref_dataframe[row, col_to_add])
   }
 }
+
+##################################################
+
+
+#double check tables with full_join
+
+fj_combined_table <- full_join(sleuth_table, oe_sleuth_table, by = "target_id", suffix = c("_ue", "_oe"))
+
+#delete unecessary columns
+fj_combined_table$test_stat_ue <- NULL
+fj_combined_table$rss_ue <- NULL
+fj_combined_table$degrees_free_ue <- NULL
+fj_combined_table$mean_obs_ue <- NULL
+fj_combined_table$var_obs_ue <- NULL
+fj_combined_table$tech_var_ue <- NULL
+fj_combined_table$sigma_sq_ue <- NULL
+fj_combined_table$smooth_sigma_sq_ue <- NULL
+fj_combined_table$final_sigma_sq_ue <- NULL
+
+fj_combined_table$test_stat_oe <- NULL
+fj_combined_table$rss_oe <- NULL
+fj_combined_table$degrees_free_oe <- NULL
+fj_combined_table$mean_obs_oe <- NULL
+fj_combined_table$var_obs_oe <- NULL
+fj_combined_table$tech_var_oe <- NULL
+fj_combined_table$sigma_sq_oe <- NULL
+fj_combined_table$smooth_sigma_sq_oe <- NULL
+fj_combined_table$final_sigma_sq_oe <- NULL
+
+fj_combined_table1 <- full_join(fj_combined_table, data.frame(sleuth_results_wt[,c('b','target_id')]), by = "target_id", suffix = c("", "_ue"))
+fj_combined_table1 <- full_join(fj_combined_table1, data.frame(sleuth_results_wt_oe[,c('b','target_id')]), by = "target_id", suffix = c("", "_oe"))
+
+#reorder columns
+col_order <- c("target_id", "symbol_ue", "symbol_oe", "gene_id_ue", "gene_id_oe", "pval_ue", "pval_oe", "qval_ue", "qval_oe", "b", "b_oe", "entrez", "name")
+fj_combined_table1 <- fj_combined_table1[, col_order]
+
+fj_combined_table1$q_product <- 0
+for (i in 1:nrow(fj_combined_table1)) { 
+  q_product <- ( as.numeric(fj_combined_table1[i,"qval_ue"]) * as.numeric(fj_combined_table1[i,"qval_oe"]) )
+  fj_combined_table1[i,'q_product'] <- q_product
+}
+
+#create table of genes with q < 0.05
+fj_low_q_genes_0.05 <- dplyr::filter(fj_combined_table1, qval_ue <= 0.05)
+fj_low_q_genes_0.05 <- dplyr::filter(fj_low_q_genes_0.05, qval_oe <= 0.05)
+
+#create table of genes with q < 0.01
+fj_low_q_genes_0.01 <- dplyr::filter(fj_combined_table1, qval_ue <= 0.01)
+fj_low_q_genes_0.01 <- dplyr::filter(fj_low_q_genes_0.01, qval_oe <= 0.01)
+
+#create table of genes with q < 0.001
+fj_low_q_genes_0.001 <- dplyr::filter(fj_combined_table1, qval_ue <= 0.001)
+fj_low_q_genes_0.001 <- dplyr::filter(fj_low_q_genes_0.001, qval_oe <= 0.001)
+
+#notch expression
+fj_notch_table <- dplyr::filter(fj_combined_table1, symbol_ue == "N")
+
+#notch expression
+fj_related_table <- dplyr::filter(fj_combined_table1, symbol_ue == "N" | symbol_ue == "eya" | symbol_ue == "rib" | symbol_ue == "Pif1A" |symbol_ue == "lola" | symbol_ue == "ttk")
+  
+#create table of genes with foldchange significant > 1
+fj_foldchange_1 <- dplyr::filter(fj_combined_table1, abs(b) >= 1)
+fj_foldchange_1 <- dplyr::filter(fj_foldchange_1, abs(b_oe) >= 1)
+  
+#create table of genes with foldchange significant > 3
+fj_foldchange_3 <- dplyr::filter(fj_combined_table1, abs(b) >= 3)
+fj_foldchange_3 <- dplyr::filter(fj_foldchange_3, abs(b_oe) >= 3)  
+  
+
+#to remove duplicate transcripts if I decide to later
+easyGSEA_input_bysymbol <- easyGSEA_input[!duplicated(easyGSEA_input$genes),]
+  
