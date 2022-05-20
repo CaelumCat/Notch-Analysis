@@ -1,0 +1,46 @@
+#based on Dr. Wheeler's results
+
+#Organize results
+
+library("dplyr")
+library("data.table")
+
+Mierisch_lab_FDR0_1_opp_direction_DE_results_2022_03_08 <- Mierisch_lab_FDR0_1_opp_direction_DE_results_2022_03_08 %>% 
+  rename(
+    gene_id = gene,
+  )
+
+#filter
+opp_fc_0.5 <- filter(Mierisch_lab_FDR0_1_opp_direction_DE_results_2022_03_08, (oe_b > 0.5 & ue_b < -0.5) | (oe_b < -0.5 & ue_b > 0.5))
+View(opp_fc_0.5)
+fwrite(opp_fc_0.5, "Mierisch_lab_FDR0.1_opp_fc_0.5_results_2022-03-30.csv")
+
+vendelek_data <- read.csv("12864_2018_5085_MOESM2_ESM.csv")
+View(vendelek_data)
+
+opp_fc_0.5_vendelek <- full_join(opp_fc_0.5, vendelek_data, 
+                                 by = "gene_id")
+opp_fc_0.5_vendelek <- opp_fc_0.5_vendelek[-c(36:nrow(opp_fc_0.5_vendelek)),]
+
+View(opp_fc_0.5_vendelek)
+fwrite(opp_fc_0.5_vendelek, "opp_fc_0.5_vendelek.csv")
+
+#filter genes with opposite fold changes of at least 1
+opp_fc_1 <- filter(Mierisch_lab_FDR0_1_opp_direction_DE_results_2022_03_08, (oe_b > 1 & ue_b < -1) | (oe_b < -1 & ue_b > 1))
+View(opp_fc_1)
+fwrite(opp_fc_1, "Mierisch_lab_FDR0.1_opp_fc_1_results_2022-03-30.csv")
+
+#sort by absolute value of overexpression Fold Change
+oe_FC_sort <- Mierisch_lab_FDR0_1_opp_direction_DE_results_2022_03_08 %>% 
+  arrange(desc(abs(oe_b)))
+
+View(oe_FC_sort)
+
+#sort by absolute value of underexpression Fold Change
+ue_FC_sort <- Mierisch_lab_FDR0_1_opp_direction_DE_results_2022_03_08 %>% 
+  arrange(desc(abs(ue_b)))
+
+View(ue_FC_sort)
+
+#reduce tables to gene_symbol, description, oe_LRT_qval, ue_LRT_qval, oe_b, ue_b
+
