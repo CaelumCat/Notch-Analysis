@@ -1,0 +1,353 @@
+christine@pop-os:~$ kallisto
+kallisto 0.46.1
+
+
+time kallisto quant -i /home/christine/index.idx -o /home/christine/w1118_1 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 24,428,354 reads, 22,904,888 reads pseudoaligned
+[quant] estimated average fragment length: 289.054
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,088 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    3m4.350s
+user    10m3.139s
+sys     0m5.829s
+christine@pop-os:/home/wheelerlab3/Data/Mierisch_Lab$ time kallisto quant -i2/w1118_2_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_2/w1118_2_2.fq.gz8_2/w1118_2_2.fq.gz18_2/w1118_2_2.fq.gz8_2/w1118_2_2.fq.gzeler2/w1118_2_2.fq.gzh_Lab/Novogene_2021-08-25/raw_data/w1118_/w1118_2_2.fq.gz
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_2/w1118_2_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_2/w1118_2_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 27,728,000 reads, 25,738,589 reads pseudoaligned
+[quant] estimated average fragment length: 290.076
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,137 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    3m25.199s
+user    11m6.328s
+sys     0m6.568s
+           
+christine@pop-os:/home/wheelerlab3/Data/Mierisch_Lab$ time kallisto quant -i /home/christine/index.idx -o /home/christine/w1118_1 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_1/w1118_1_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 24,428,354 reads, 22,904,888 reads pseudoaligned
+[quant] estimated average fragment length: 289.054
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,088 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+                            2 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_2/w1118_2_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_2/w1118_2_2.fq.gz-08-25/raw_data/w1118_2/w1118_2_2.fq.gz-08-25/raw_data/w1118_2/w1118_2_2.fq.gz1-08-25/raw_data/w1118_2/w1118_2_2.fq.gz1_1.fq.gz /hom[quant] fragment length distribution will be estimated from the data/w1118_1_2.fq.gzata/w1118_1/w1118_1_1.fq.gz /home/[index] k-mer length: 31h_LabNovogene_2021-08-25/raw_data/w1118_1/w1118_1_2.fq.gz[index] number of targets: 31,089[index] number of k-mers: 33,295,840gene_2021-08-25/raw_data/w1118_1/w1118_1_2.fq.gz
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_2/w1118_2_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_2/w1118_2_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 27,728,000 reads, 25,738,589 reads pseudoaligned
+[quant] estimated average fragment length: 290.076
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,137 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    3m11.532s
+user    10m29.624s                                                                                          3 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_3/w1118_3_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_3/w1118_3_2.fq.gz-08-25/raw_data/w1118_3/w1118_3_2.fq.gzlerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_3/w1118_3_2.fq.gz8_3/w1118_3_2.fq.gz18_3/w1118_3_2.fq.gz8_3/w1118_3_2.[quant] fragment length distribution will be estimated from the dataw1118_3_2.fq.gz
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_3/w1118_3_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/w1118_3/w1118_3_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 25,877,506 reads, 24,192,070 reads pseudoaligned
+[quant] estimated average fragment length: 298.219
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,110 rounds
+[bstrp] number of EM bootstraps complete: 100
+                    s1 -b 100  -t 41_1/Nts1_1_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_1/Nts1_1_2.fq.gzb/Novogene_2021-08-25/raw_data/Nts1_1/Nts1_1_2.fq.gzs1_1/Nts1_1_2.fq.gza/Nts1_1/Nts1_1_2.fq.gz1_1_2.fq.gz21-08-25/raw_data/Nts1_1/Nts1_1_2.fq.gzgzq.gz021-08-25/raw_data/Nts1_1/Nts1_1_2.fq.gz        s_1/Nts_1_1.[quant] fragment length distribution will be estimated from the datata/Nts1_1/Nts1_1_2.fq.gzs1_1/Nts1_1_2.fq.gzs1_1/Nt[index] k-mer length: 312.fq.gzts1_1/Nts1_1_2.fq.gzts1_1/Nts1_1_2.fq.gzts1_1/Nts1_1_2.fq.gzts1_1/Nts1_1_2.fq.gzts[index] number of targets: 31,089q.gzts1_1/Nts1_1_2.fq.gzs1_1/Nts1_1_2.fq.gzs1_1/Nts1_1_2.fq.gzs1_1/Nts1_1_2.fq.gzts[index] number of k-mers: 33,295,840.gzts1_1/Nts1_1_2.fq.gzts1_1/Nts1_1_2.fq.gzts1_1/Nts1_1_2.fq.gzs1_1/Nts1_1_2.fq[index] number of equivalence classes: 59,212/raw_data/w1118_/Nts1_1_2.fq.gz
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_1/Nts1_1_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_1/Nts1_1_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 25,997,231 reads, 24,409,516 reads pseudoaligned
+[quant] estimated average fragment length: 288.026
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,083 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+christine@pop-os:/home/wheelerlab3/Data/Mierisch_Lab$ time kallisto quant -i /home/christine/index.idx -o /home/christine/Nts1_2 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_2/Nts1_2_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_2/Nts1_2_2.fq.gz[quant] fragment length distribution will be estimated from the data.fq.gzts1_2/Nts1_2_2.fq.gza/Nts1_2/Nts1_2_2.fq.gz[index] k-mer length: 31_Lab/Novogene_2021-08-25/raw_data/Nts1_/Nts1_2_2.fq.gz
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_2/Nts1_2_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_2/Nts1_2_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 24,907,967 reads, 23,171,377 reads pseudoaligned
+[quant] estimated average fragment length: 295.646
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,119 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    2m55.285s
+user    9m48.295s                                                                                          3 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_3/Nts1_3_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_3/Nts1_3_2.fq.gz21-08-25/raw_data/Nts1_3/Nts1_3_2.fq.gzrlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_3/Nts1_3_2.fq.gzs1_3/Nts1_3_2.fq.gzts1_3/Nts1_3_2.fq.gza/Nts1_3/Nts1_3_2.fq.gz[quant] fragment length distribution will be estimated from the data_3_2.fq.gz
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_3/Nts1_3_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2021-08-25/raw_data/Nts1_3/Nts1_3_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 27,934,268 reads, 26,197,385 reads pseudoaligned
+[quant] estimated average fragment length: 290.147
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,136 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+christine@pop-os:/home/wheelerlab3/Data/Mierisch_Lab$ cd /home/wheelerlab3/Data/Mierisch_Lab/
+christine@pop-os:/home/wheelerlab3/Data/Mierisch_Lab$ time kallisto index -i index.idx Drosophila_Melanogaster.BDGP6.32.cdna.all.fa.gz
+
+Error: FASTA file not found Drosophila_Melanogaster.BDGP6.32.cdna.all.fa.gz
+kallisto 0.46.1
+Builds a kallisto index
+
+Usage: kallisto index [arguments] FASTA-files
+
+Required argument:
+-i, --index=STRING          Filename for the kallisto index to be constructed 
+
+Optional argument:
+-k, --kmer-size=INT         k-mer (odd) length (default: 31, max value: 31)
+    --make-unique           Replace repeated target names with unique names
+
+
+real    0m0.006s
+user    0m0.004s
+sys     0m0.000s
+christine@pop-os:/home/wheelerlab3/Data/Mierisch_Lab$ cd ~
+christine@pop-os:~$ time kallisto index -i index.idx Drosophila_Melanogaster.BDGP6.32.cdna.all.fa.gz
+
+Error: FASTA file not found Drosophila_Melanogaster.BDGP6.32.cdna.all.fa.gz
+kallisto 0.46.1
+Builds a kallisto index
+
+Usage: kallisto index [arguments] FASTA-files
+
+Required argument:
+-i, --index=STRING          Filename for the kallisto index to be constructed 
+
+Optional argument:
+-k, --kmer-size=INT         k-mer (odd) length (default: 31, max value: 31)
+    --make-unique           Replace repeated target names with unique names
+
+
+real    0m0.003s
+user    0m0.001s
+sys     0m0.003s
+christine@pop-os:~$ time kallisto index -i index.idx Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz
+
+[build] loading fasta file Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz
+[build] k-mer length: 31
+[build] warning: clipped off poly-A tail (longer than 10)
+        from 8 target sequences
+[build] counting k-mers ... done.
+[build] building target de Bruijn graph ...  done 
+[build] creating equivalence classes ...  done
+[build] target de Bruijn graph has 71590 contigs and contains 33295840 k-mers 
+
+
+real    1m10.952s
+user    1m8.152s
+sys     0m2.423s
+christine@pop-os:~$ time kallisto quant -i /home/christine/iindex -i index.idx Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz/Data/Mierisch_Lab/Novogenquant -i /home/christine/indOw1118_1 -b 100  -t 4 /homevw1118_1 -b 100  -t 4 /homee/w1118_1 -b 100  -t 4 /home/w2-01-19/raw_data/w1118_1/w1118_1_1.fq.gz-25/raw_data/w1118_1/w1118_1_1.fq.gz
+
+Error: paired-end mode requires an even number of input files
+       (use --single for processing single-end reads)
+
+Usage: kallisto quant [arguments] FASTQ-files
+
+Required arguments:
+-i, --index=STRING            Filename for the kallisto index to be used for
+                              quantification
+-o, --output-dir=STRING       Directory to write output to
+
+Optional arguments:
+    --bias                    Perform sequence based bias correction
+-b, --bootstrap-samples=INT   Number of bootstrap samples (default: 0)
+    --seed=INT                Seed for the bootstrap sampling (default: 42)
+    --plaintext               Output plaintext instead of HDF5
+    --fusion                  Search for fusions for Pizzly
+    --single                  Quantify single-end reads
+    --single-overhang         Include reads where unobserved rest of fragment is
+                              predicted to lie outside a transcript
+    --fr-stranded             Strand specific reads, first read forward
+    --rf-stranded             Strand specific reads, first read reverse
+-l, --fragment-length=DOUBLE  Estimated average fragment length
+-s, --sd=DOUBLE               Estimated standard deviation of fragment length
+                              (default: -l, -s values are estimated from paired
+                               end data, but are required when using --single)
+-t, --threads=INT             Number of threads to use (default: 1)
+    --pseudobam               Save pseudoalignments to transcriptome to BAM file
+    --genomebam               Project pseudoalignments to genome sorted BAM file
+-g, --gtf                     GTF file for transcriptome information
+                              (required for --genomebam)
+-c, --chromosomes             Tab separated file with chromosome names and lengths
+                              (optional for --genomebam, but recommended)
+
+real    0m0.004s
+user    0m0.000s
+sys     0m0.004s
+christine@pop-os:~$ time kallisto quant -i /home/christine/index.idx -o /home/christine/Overexpression/w1118_1 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_1/w1118_1_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_1/w1118_1_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_1/w1118_1_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_1/w1118_1_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 21,028,370 reads, 19,644,812 reads pseudoaligned
+[quant] estimated average fragment length: 256.751
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,094 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    2m31.939s
+user    7m56.061s
+sys     0m4.349s
+christine@pop-os:~$ time kallisto quant -i /home/christine/index.idx -o /home/christine/Overexpression/w1118_2 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_2/w1118_2_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_2/w1118_2_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_2/w1118_2_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_2/w1118_2_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 24,049,624 reads, 22,242,688 reads pseudoaligned
+[quant] estimated average fragment length: 283.244
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,135 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    2m51.645s
+user    8m57.011s
+sys     0m4.961s
+christine@pop-os:~$ time kallisto quant -i /home/christine/index.idx -o /home/chris -b 100  -t 4 /home/wheele3 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_3/w1118_3_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_3/w1118_3_2.fq.gzata/w1118_3/w1118_3_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_3/w1118_3_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/w1118_3/w1118_3_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 25,544,360 reads, 23,927,522 reads pseudoaligned
+[quant] estimated average fragment length: 256.901
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,107 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    3m0.130s
+user    9m25.143s
+sys     0m4.732s
+christine@pop-os:~$ time kallisto quant -i /home/christine/index.idx -o /home/chris -b 100  -t 4 /home/Nintra_1 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_1/Nintra_1_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_1/Nintra_1_2.fq.gzraw_data/Nintra_1/Nintra_1_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_1/Nintra_1_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_1/Nintra_1_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 23,780,369 reads, 22,501,863 reads pseudoaligned
+[quant] estimated average fragment length: 264.482
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,113 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    2m49.441s
+user    8m44.152s
+sys     0m4.820s
+christine@pop-os:~$ time kallisto quant -i /home/christine/index.idx -o /home/christ -b 100  -t 4 /home/wheele2 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_2/Nintra_2_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_2/Nintra_2_2.fq.gz19/raw_data/Nintra_2/Nintra_2_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_2/Nintra_2_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_2/Nintra_2_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 19,782,444 reads, 18,640,405 reads pseudoaligned
+[quant] estimated average fragment length: 270.809
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,134 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+christine@pop-os:~$ time kallisto quant -i /home/christine/index.idx -o /home/christ -b 100  -t 4 /home/wheele3 -b 100  -t 4 /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_3/Nintra_3_1.fq.gz /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_3/Nintra_3_2.fq.gzNintra_3/Nintra_3_2.fq.gz
+
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 31,089
+[index] number of k-mers: 33,295,840
+[index] number of equivalence classes: 59,212
+[quant] running in paired-end mode
+[quant] will process pair 1: /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_3/Nintra_3_1.fq.gz
+                             /home/wheelerlab3/Data/Mierisch_Lab/Novogene_2022-01-19/raw_data/Nintra_3/Nintra_3_2.fq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] processed 24,248,680 reads, 22,990,636 reads pseudoaligned
+[quant] estimated average fragment length: 274.718
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,148 rounds
+[bstrp] number of EM bootstraps complete: 100
+
+
+real    2m52.631s
+user    8m56.714s
+sys     0m4.641s
+less -S Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz 
+christine@pop-os:~$ less -S Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz | grep FBtr0070507
+>FBtr0070507 cdna primary_assembly:BDGP6.32:X:3134870:3172221:1 gene:FBgn0004647 gene_biotype:protein_coding transcript_biotype:protein_coding gene_symbol:N description:Notch
