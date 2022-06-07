@@ -1,0 +1,52 @@
+
+library("dplyr")
+
+distinct(mydata,NAME, .keep_all= TRUE) 
+
+#pull kallisto estimates
+ue_kallisto_table <- kallisto_table(so)
+
+#looks good, but we need all the data for one transcript in one row
+#we need to have one additional column per sample (Nts1_1 and so on) instead of additional rows
+View(ue_kallisto_table)
+
+#add extra blank columns
+ue_kallisto_table$Nts1_1 <- NA
+ue_kallisto_table$Nts1_2 <- NA
+ue_kallisto_table$Nts1_3 <- NA
+ue_kallisto_table$W1118_1 <- NA
+ue_kallisto_table$W1118_2 <- NA
+ue_kallisto_table$W1118_3 <- NA
+
+#add est_counts of each sample into the first row with each unique transcript
+#this exploits the fact that there are 6 rows per target_id
+for(row in 1:nrow(ue_kallisto_table)) {
+  target_id <- ue_kallisto_table$target_id[row]
+  
+  if (ue_kallisto_table$sample[row] == "Nts1_1")
+    ue_kallisto_table$Nts1_1[row] <- ue_kallisto_table[row, 3]
+  
+  if (ue_kallisto_table$sample[row] == "Nts1_2")
+    ue_kallisto_table$Nts1_2[row-1] <- ue_kallisto_table[row, 3]
+  
+  if (ue_kallisto_table$sample[row] == "Nts1_3")
+    ue_kallisto_table$Nts1_3[row-2] <- ue_kallisto_table[row, 3]
+  
+  if (ue_kallisto_table$sample[row] == "w1118_1")
+    ue_kallisto_table$W1118_1[row-3] <- ue_kallisto_table[row, 3]
+  
+  if (ue_kallisto_table$sample[row] == "w1118_2")
+    ue_kallisto_table$W1118_2[row-4] <- ue_kallisto_table[row, 3]
+  
+  if (ue_kallisto_table$sample[row] == "w1118_3")
+    ue_kallisto_table$W1118_3[row-5] <- ue_kallisto_table[row, 3]
+}
+
+#remove duplicate columns per transcript_id 
+ue_kallisto_table <- distinct(ue_kallisto_table,target_id, .keep_all= TRUE) 
+View(ue_kallisto_table)
+
+#export and edit to meet other formatting requirements
+fwrite(ue_kallisto_table, "ue_kallisto_table.csv")
+
+
