@@ -1,52 +1,201 @@
 
 library("dplyr")
 
-distinct(mydata,NAME, .keep_all= TRUE) 
+#distinct(mydata,NAME, .keep_all= TRUE) 
 
 #pull kallisto estimates
-ue_kallisto_table <- kallisto_table(so)
+ue_kallisto_table_tpm <- kallisto_table(so)
 
 #looks good, but we need all the data for one transcript in one row
 #we need to have one additional column per sample (Nts1_1 and so on) instead of additional rows
-View(ue_kallisto_table)
+View(ue_kallisto_table_tpm)
 
 #add extra blank columns
-ue_kallisto_table$Nts1_1 <- NA
-ue_kallisto_table$Nts1_2 <- NA
-ue_kallisto_table$Nts1_3 <- NA
-ue_kallisto_table$W1118_1 <- NA
-ue_kallisto_table$W1118_2 <- NA
-ue_kallisto_table$W1118_3 <- NA
+ue_kallisto_table_tpm$Nts1_1 <- NA
+ue_kallisto_table_tpm$Nts1_2 <- NA
+ue_kallisto_table_tpm$Nts1_3 <- NA
+ue_kallisto_table_tpm$W1118_1 <- NA
+ue_kallisto_table_tpm$W1118_2 <- NA
+ue_kallisto_table_tpm$W1118_3 <- NA
 
-#add est_counts of each sample into the first row with each unique transcript
+#add tpm of each sample into the first row with each unique transcript
 #this exploits the fact that there are 6 rows per target_id
-for(row in 1:nrow(ue_kallisto_table)) {
-  target_id <- ue_kallisto_table$target_id[row]
+for(row in 1:nrow(ue_kallisto_table_tpm)) {
   
-  if (ue_kallisto_table$sample[row] == "Nts1_1")
-    ue_kallisto_table$Nts1_1[row] <- ue_kallisto_table[row, 3]
+  if (ue_kallisto_table_tpm$sample[row] == "Nts1_1")
+    ue_kallisto_table_tpm$Nts1_1[row] <- ue_kallisto_table_tpm[row, 4]
   
-  if (ue_kallisto_table$sample[row] == "Nts1_2")
-    ue_kallisto_table$Nts1_2[row-1] <- ue_kallisto_table[row, 3]
+  if (ue_kallisto_table_tpm$sample[row] == "Nts1_2")
+    ue_kallisto_table_tpm$Nts1_2[row-1] <- ue_kallisto_table_tpm[row, 4]
   
-  if (ue_kallisto_table$sample[row] == "Nts1_3")
-    ue_kallisto_table$Nts1_3[row-2] <- ue_kallisto_table[row, 3]
+  if (ue_kallisto_table_tpm$sample[row] == "Nts1_3")
+    ue_kallisto_table_tpm$Nts1_3[row-2] <- ue_kallisto_table_tpm[row, 4]
   
-  if (ue_kallisto_table$sample[row] == "w1118_1")
-    ue_kallisto_table$W1118_1[row-3] <- ue_kallisto_table[row, 3]
+  if (ue_kallisto_table_tpm$sample[row] == "w1118_1")
+    ue_kallisto_table_tpm$W1118_1[row-3] <- ue_kallisto_table_tpm[row, 4]
   
-  if (ue_kallisto_table$sample[row] == "w1118_2")
-    ue_kallisto_table$W1118_2[row-4] <- ue_kallisto_table[row, 3]
+  if (ue_kallisto_table_tpm$sample[row] == "w1118_2")
+    ue_kallisto_table_tpm$W1118_2[row-4] <- ue_kallisto_table_tpm[row, 4]
   
-  if (ue_kallisto_table$sample[row] == "w1118_3")
-    ue_kallisto_table$W1118_3[row-5] <- ue_kallisto_table[row, 3]
+  if (ue_kallisto_table_tpm$sample[row] == "w1118_3")
+    ue_kallisto_table_tpm$W1118_3[row-5] <- ue_kallisto_table_tpm[row, 4]
 }
 
 #remove duplicate columns per transcript_id 
-ue_kallisto_table <- distinct(ue_kallisto_table,target_id, .keep_all= TRUE) 
-View(ue_kallisto_table)
+ue_kallisto_table_tpm <- distinct(ue_kallisto_table_tpm,target_id, .keep_all= TRUE) 
+View(ue_kallisto_table_tpm)
+
+#turn transcript IDs into gene symbols
+
+#create blank row for gene symbol
+ue_kallisto_table_tpm$symbol <- NA
+
+#I have already turned the file fbtr_to_fbgn2021_06.tsv into a dataframe
+#can find this on the flybase site somewhere
+
+#match each value in a column to another chosen column of a secondary dataframe
+#do not match if there is no value present 
+#add or replace a column of data
+for (i in 1:nrow(ue_kallisto_table_tpm)) { 
+  id <- toString(ue_kallisto_table_tpm[i,'target_id'])
+  row <- which(fbtr_to_fbgn_2$transcript_ID == id ,arr.ind=TRUE)
+  if (toString(fbtr_to_fbgn_2[row, 'gene_symbol']) != "")
+    ue_kallisto_table_tpm[i,'symbol'] <- toString(fbtr_to_fbgn_2[row, 'gene_symbol'])
+}
+
+#remove NAs 
+ue_kallisto_table_tpm <- na.omit(ue_kallisto_table_tpm)
+View(ue_kallisto_table_tpm)
+
+ue_kallisto_table_tpm1 <- ue_kallisto_table_tpm 
+
+#take the sum of all tpm data for each gene symbol and remove duplicate gene symbol rows
+ue_kallisto_table_tpm <- ue_kallisto_table_tpm %>%
+  group_by(symbol, .drop = FALSE) %>%
+  summarise(total_Nts1_1 = sum(Nts1_1), total_Nts1_2 = sum(Nts1_2),
+            total_Nts1_3 = sum(Nts1_3), total_W1118_1 = sum(W1118_1),
+            total_W1118_2 = sum(W1118_2), total_W1118_3 = sum(W1118_3))
+
 
 #export and edit to meet other formatting requirements
-fwrite(ue_kallisto_table, "ue_kallisto_table.csv")
+fwrite(ue_kallisto_table_tpm, "ue_kallisto_table_tpm.csv")
+
+
+
+
+###### repeat for overexpression data #######
+
+
+
+
+library("dplyr")
+
+#distinct(mydata,NAME, .keep_all= TRUE) 
+
+#pull kallisto estimates
+oe_kallisto_table_tpm <- kallisto_table(so_oe)
+
+#looks good, but we need all the data for one transcript in one row
+#we need to have one additional column per sample (Nts1_1 and so on) instead of additional rows
+View(oe_kallisto_table_tpm)
+
+#add extra blank columns
+oe_kallisto_table_tpm$Nintra_1 <- NA
+oe_kallisto_table_tpm$Nintra_2 <- NA
+oe_kallisto_table_tpm$Nintra_3 <- NA
+oe_kallisto_table_tpm$W1118_1 <- NA
+oe_kallisto_table_tpm$W1118_2 <- NA
+oe_kallisto_table_tpm$W1118_3 <- NA
+
+#add tpm of each sample into the first row with each unique transcript
+#this exploits the fact that there are 6 rows per target_id
+for(row in 1:nrow(oe_kallisto_table_tpm)) {
+  
+  if (oe_kallisto_table_tpm$sample[row] == "Nintra_1")
+    oe_kallisto_table_tpm$Nintra_1[row] <- oe_kallisto_table_tpm[row, 4]
+  
+  if (oe_kallisto_table_tpm$sample[row] == "Nintra_2")
+    oe_kallisto_table_tpm$Nintra_2[row-1] <- oe_kallisto_table_tpm[row, 4]
+  
+  if (oe_kallisto_table_tpm$sample[row] == "Nintra_3")
+    oe_kallisto_table_tpm$Nintra_3[row-2] <- oe_kallisto_table_tpm[row, 4]
+  
+  if (oe_kallisto_table_tpm$sample[row] == "w1118_1")
+    oe_kallisto_table_tpm$W1118_1[row-3] <- oe_kallisto_table_tpm[row, 4]
+  
+  if (oe_kallisto_table_tpm$sample[row] == "w1118_2")
+    oe_kallisto_table_tpm$W1118_2[row-4] <- oe_kallisto_table_tpm[row, 4]
+  
+  if (oe_kallisto_table_tpm$sample[row] == "w1118_3")
+    oe_kallisto_table_tpm$W1118_3[row-5] <- oe_kallisto_table_tpm[row, 4]
+}
+
+#remove duplicate columns per transcript_id 
+oe_kallisto_table_tpm <- distinct(oe_kallisto_table_tpm,target_id, .keep_all= TRUE) 
+View(oe_kallisto_table_tpm)
+
+#turn transcript IDs into gene symbols
+
+#create blank row for gene symbol
+oe_kallisto_table_tpm$symbol <- NA
+
+#I have already turned the file fbtr_to_fbgn2021_06.tsv into a dataframe
+#can find this on the flybase site somewhere
+
+#match each value in a column to another chosen column of a secondary dataframe
+#do not match if there is no value present
+#add or replace a column of data
+for (i in 1:nrow(oe_kallisto_table_tpm)) { 
+  id <- toString(oe_kallisto_table_tpm[i,'target_id'])
+  row <- which(fbtr_to_fbgn_2$transcript_ID == id ,arr.ind=TRUE)
+  if (toString(fbtr_to_fbgn_2[row, 'gene_symbol']) != "")
+    oe_kallisto_table_tpm[i,'symbol'] <- toString(fbtr_to_fbgn_2[row, 'gene_symbol'])
+}
+
+#remove NAs 
+oe_kallisto_table_tpm <- na.omit(oe_kallisto_table_tpm)
+View(oe_kallisto_table_tpm)
+
+#backup file to restore old data without running long code as I attempt to fix this
+#oe_kallisto_table_tpm <- oe_kallisto_table_tpm1
+
+#take the sum of all tpm data for each gene symbol and remove duplicate gene symbol rows
+oe_kallisto_table_tpm <- oe_kallisto_table_tpm %>%
+  group_by(symbol, .drop = FALSE) %>%
+  summarise(total_Nintra_1 = sum(Nintra_1), total_Nintra_2 = sum(Nintra_2),
+            total_Nintra_3 = sum(as.numeric(Nintra_3)), total_W1118_1 = sum(W1118_1),
+            total_W1118_2 = sum(W1118_2), total_W1118_3 = sum(W1118_3))
+
+#combine columns by symbol using a series of nested loops
+#failed
+
+#coverage <- list()
+#for (i in 1:nrow(oe_kallisto_table_tpm)) { 
+#  for (j in i:nrow(oe_kallisto_table_tpm)) { 
+#    if (identical(oe_kallisto_table_tpm$symbol[i], oe_kallisto_table_tpm$symbol[j]) & !(j %in% coverage)) {
+#     oe_kallisto_table_tpm$Nintra_1[i] = sum(oe_kallisto_table_tpm$Nintra_1[i], oe_kallisto_table_tpm$Nintra_1[j])
+      
+#      oe_kallisto_table_tpm$Nintra_2[i] = sum(oe_kallisto_table_tpm$Nintra_2[i], oe_kallisto_table_tpm$Nintra_2[j])
+      
+#      oe_kallisto_table_tpm$Nintra_3[i] = sum(as.numeric(oe_kallisto_table_tpm$Nintra_3[i]), as.numeric(oe_kallisto_table_tpm$Nintra_3[j]))
+
+#      oe_kallisto_table_tpm$W1118_1[i] = sum(oe_kallisto_table_tpm$W1118_1[i], oe_kallisto_table_tpm$W1118_1[j])
+
+#      oe_kallisto_table_tpm$W1118_2[i] = sum(oe_kallisto_table_tpm$W1118_2[i], oe_kallisto_table_tpm$W1118_2[j])
+
+#      oe_kallisto_table_tpm$W1118_3[i] = sum(oe_kallisto_table_tpm$W1118_3[i], oe_kallisto_table_tpm$W1118_3[j])
+      
+#      oe_kallisto_table_tpm$sample[j] <- NA
+#      coverage <- c(coverage, j)
+#    }
+#  }  
+#}
+#oe_kallisto_table_tpm <- na.omit(oe_kallisto_table_tpm)
+
+
+#export and edit to meet other formatting requirements
+fwrite(oe_kallisto_table_tpm, "oe_kallisto_table_tpm.csv")
+
+
 
 
