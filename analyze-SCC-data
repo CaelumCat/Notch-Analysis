@@ -1,0 +1,180 @@
+#add early SCC data
+
+setwd("~/")
+
+early_scc_genes <- read.csv("Adashev_early_SCC_biased_genes.csv")
+View(early_scc_genes)
+
+
+
+####organize overexpression data####
+
+#add beta values into lrt table, match using transcript id
+oe_results <- left_join(oe_sleuth_table, sleuth_results_wt_oe, 
+                            by = "target_id", suffix = c(".lrt", ".wt"))
+#delete unnecessary columns
+oe_results <- select(oe_results, -c(test_stat, rss, degrees_free, mean_obs.lrt, var_obs.lrt, tech_var.lrt, sigma_sq.lrt,smooth_sigma_sq.lrt, final_sigma_sq.lrt,symbol.lrt, pval.wt, qval.wt, se_b, mean_obs.wt, var_obs.wt, tech_var.wt, sigma_sq.wt, smooth_sigma_sq.wt, final_sigma_sq.wt, gene_id.wt))
+
+
+
+####organize underexpression data####
+
+#join results from lrt and wt 
+ue_results <- left_join(sleuth_table, sleuth_results_wt, 
+                            by = "target_id", suffix = c(".lrt", ".wt"))
+#delete unnecessary columns
+ue_results <- select(ue_results, -c(test_stat, rss, degrees_free, mean_obs.lrt, var_obs.lrt, tech_var.lrt, sigma_sq.lrt,smooth_sigma_sq.lrt, final_sigma_sq.lrt,symbol.lrt, pval.wt, qval.wt, se_b, mean_obs.wt, var_obs.wt, tech_var.wt, sigma_sq.wt, smooth_sigma_sq.wt, final_sigma_sq.wt, gene_id.wt))
+
+
+
+####merge all data####
+
+oe_ue_data <- full_join(oe_results, ue_results, by = 'target_id',  suffix = c(".oe", ".ue"))
+View(oe_ue_data)
+#organize column order
+oe_ue_data <- relocate(oe_ue_data, symbol.wt.oe, .before = target_id)
+#delete duplicate columns
+oe_ue_data <- select(oe_ue_data, -c(gene_id.lrt.ue, symbol.wt.ue))
+#rename symbol column
+oe_ue_data <- oe_ue_data %>% 
+  rename(
+    symbol = symbol.wt.oe
+  )
+
+View(oe_ue_data)
+
+
+
+
+#add in early scc_data
+scc_data <- full_join(oe_ue_data, early_scc_genes, by = 'symbol')
+scc_data <- na.omit(scc_data)
+View(scc_data)
+
+#delete duplicate gene transcripts *deletes key data, run this to determine number of genes
+#I ran the code once using this line and again without it to keep all transcripts in the data
+
+#scc_data <- distinct(scc_data, by=symbol, .keep_all = TRUE)
+
+#241 genes recognized out of 263
+
+#write to csv for further analysis
+#contains all genes significantly biased to early SCCs in the Adashev et al. 2022 paper
+fwrite(scc_data, "early_SCC_biased_genes.csv")
+
+#add in cutoffs to calculate number of genes
+oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- scc_data
+oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, (b.oe > 0.5) | (b.oe < -0.5))
+oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, (qval.lrt.oe < 0.1))
+
+#calculate number of genes
+NUM_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- distinct(oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, by=symbol, .keep_all = TRUE)
+View(NUM_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1)
+
+
+
+ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- scc_data
+ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, (b.ue > 0.5) | (b.ue < -0.5))
+ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, (qval.lrt.ue < 0.1))
+
+View(ue_cutoff_oe_ue_data_b_0.5_fdr_0.1)
+
+#calculate number of genes
+NUM_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- distinct(ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, by=symbol, .keep_all = TRUE)
+View(NUM_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1)
+
+
+
+#merge
+oe_ue_data_b_0.5_fdr_0.1 <- inner_join(oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, by = 'symbol',  suffix = c(".oe", ".ue"))
+View(oe_ue_data_b_0.5_fdr_0.1)
+
+#calculate number of genes
+NUM_oe_ue_data_b_0.5_fdr_0.1 <- distinct(oe_ue_data_b_0.5_fdr_0.1, by=symbol, .keep_all = TRUE)
+View(NUM_oe_ue_data_b_0.5_fdr_0.1)
+
+fwrite(oe_ue_data_b_0.5_fdr_0.1, "early_SCC_biased_b_0.5_fdr_0.1.csv")
+
+
+
+####add in mature scc_data####
+
+mature_scc_genes <- read.csv("Adashev_mature_SCC_biased_genes.csv")
+View(mature_scc_genes)
+
+
+
+#add in mature scc_data
+mature_scc_data <- full_join(oe_ue_data, mature_scc_genes, by = 'symbol')
+mature_scc_data <- na.omit(mature_scc_data)
+View(mature_scc_data)
+
+#calculate number of genes
+NUM_mature_scc_data <- distinct(mature_scc_data, by=symbol, .keep_all = TRUE)
+View(NUM_mature_scc_data)
+#480 genes recognized out of 1072
+
+#write to csv for further analysis
+#contains all genes significantly biased to early SCCs in the Adashev et al. 2022 paper
+fwrite(mature_scc_data, "mature_SCC_biased_genes.csv")
+
+#add in cutoffs to calculate number of genes
+mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- mature_scc_data
+mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, (b.oe > 0.5) | (b.oe < -0.5))
+mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, (qval.lrt.oe < 0.1))
+View(mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1)
+
+#calculate number of genes
+NUM_mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- distinct(mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, by=symbol, .keep_all = TRUE)
+View(NUM_mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1)
+
+
+mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- mature_scc_data
+mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, (b.ue > 0.5) | (b.ue < -0.5))
+mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- filter(mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, (qval.lrt.ue < 0.1))
+
+View(mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1)
+
+#calculate number of genes
+NUM_mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1 <- distinct(mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, by=symbol, .keep_all = TRUE)
+View(NUM_mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1)
+
+
+
+#merge
+mature_oe_ue_data_b_0.5_fdr_0.1 <- inner_join(mature_oe_cutoff_oe_ue_data_b_0.5_fdr_0.1, mature_ue_cutoff_oe_ue_data_b_0.5_fdr_0.1, by = 'symbol',  suffix = c(".oe", ".ue"))
+View(mature_oe_ue_data_b_0.5_fdr_0.1)
+
+#calculate number of genes
+NUM_mature_oe_ue_data_b_0.5_fdr_0.1 <- distinct(mature_oe_ue_data_b_0.5_fdr_0.1, by=symbol, .keep_all = TRUE)
+View(NUM_mature_oe_ue_data_b_0.5_fdr_0.1)
+
+fwrite(mature_oe_ue_data_b_0.5_fdr_0.1, "mature_SCC_biased_b_0.5_fdr_0.1.csv")
+
+
+#### merge full Adashev dataset with full Notch data ####
+
+adashev <- read.csv("full_Adashev_data.csv")
+View(adashev)
+#13,431 genes
+
+#rename symbol column
+adashev <- adashev %>% 
+  rename(
+    symbol = Gene.name
+  )
+
+full_Adashev_scc_data <- full_join(oe_ue_data, adashev, by = 'symbol')
+full_Adashev_scc_data <- na.omit(full_Adashev_scc_data)
+View(full_Adashev_scc_data)
+
+#export
+fwrite(full_Adashev_scc_data, "full_Adashev_scc_data.csv")
+
+#check number of genes matched
+NUM_full_Adashev_scc_data <- distinct(full_Adashev_scc_data, by=symbol, .keep_all = TRUE)
+View(NUM_full_Adashev_scc_data)
+#10,817 genes matched properly
+
+
+
