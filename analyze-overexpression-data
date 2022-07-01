@@ -21,8 +21,8 @@ all_oe_results <- filter(all_oe_results, (b > 0.5) | (b < -0.5))
 all_oe_results <- filter(all_oe_results, (qval.lrt < 0.1))
 
 #delete duplicate gene transcripts *deletes key data
-all_oe_results <- distinct(all_oe_results, by=symbol.wt, .keep_all = TRUE)
-
+NUM_all_oe_results <- distinct(all_oe_results, by=symbol.wt, .keep_all = TRUE)
+View(NUM_all_oe_results)
 View(all_oe_results)
 #391 genes
 
@@ -30,10 +30,37 @@ View(all_oe_results)
 all_oe_results <- relocate(all_oe_results, b, .after = qval.lrt)
 all_oe_results <- relocate(all_oe_results, symbol.wt)
 
-all_oe_results <- distinct(all_oe_results, by=symbol.wt, .keep_all = TRUE)
 
 #write to csv for further analysis
 fwrite(all_oe_results, "oe_results_fdr_0.1_b_0.5.csv")
+
+
+##create additional file merging gene duplicates for easyGSEA
+
+#take the sum of all logFC data for each gene symbol and remove duplicate gene symbol rows
+all_oe_results2 <- all_oe_results %>%
+  group_by(symbol.wt, .drop = FALSE) %>%
+  summarise(total_logFC = sum(b), .groups = "keep")
+
+easyGSEA_all_oe_results <- left_join(all_oe_results, all_oe_results2, 
+                            by = "symbol.wt")
+
+View(easyGSEA_all_oe_results)
+
+#delete unnecessary columns
+easyGSEA_all_oe_results <- select(easyGSEA_all_oe_results, -c(test_stat, rss, degrees_free, mean_obs.lrt, var_obs.lrt, tech_var.lrt, sigma_sq.lrt,smooth_sigma_sq.lrt, final_sigma_sq.lrt,symbol.lrt, pval.wt, qval.wt, se_b, mean_obs.wt, var_obs.wt, tech_var.wt, sigma_sq.wt, smooth_sigma_sq.wt, final_sigma_sq.wt, gene_id.wt))
+
+
+
+#write to csv for easyGSEA
+fwrite(easyGSEA_all_oe_results, "easyGSEA_oe_results_fdr_0.1_b_0.5.csv")
+
+
+
+
+
+
+
 
 
 #### underexpression too #####
