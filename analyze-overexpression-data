@@ -1,0 +1,89 @@
+#analyze overexpression data
+library("dplyr")
+library("data.table")
+#pull up original sleuth tables from oe data
+
+#lrt test
+View(oe_sleuth_table)
+#wald test for beta values
+View(sleuth_results_wt_oe)
+
+#add beta values into lrt table, match using transcript id
+all_oe_results <- left_join(oe_sleuth_table, sleuth_results_wt_oe, 
+                                 by = "target_id", suffix = c(".lrt", ".wt"))
+all_oe_results <- distinct(all_oe_results, by=symbol.wt, .keep_all = TRUE)
+View(all_oe_results)
+
+#delete unnecessary columns
+#all_oe_results <- select(all_oe_results, -c(test_stat, rss, degrees_free, mean_obs.lrt))
+
+#filter to genes with fold change of greater than 0.5 (abs) and q < 0.1
+all_oe_results <- filter(all_oe_results, (b > 0.5) | (b < -0.5))
+all_oe_results <- filter(all_oe_results, (qval.lrt < 0.1))
+View(all_oe_results)
+#319 genes
+
+#organize column order
+all_oe_results <- relocate(all_oe_results, b, .after = qval.lrt)
+all_oe_results <- relocate(all_oe_results, symbol.wt)
+
+all_oe_results <- distinct(all_oe_results, by=symbol.wt, .keep_all = TRUE)
+
+#write to csv for further analysis
+fwrite(all_oe_results, "oe_results_fdr_0.1_b_0.5.csv")
+
+
+#### underexpression too #####
+
+#lrt test
+View(sleuth_table)
+#wald test for beta values
+View(sleuth_results_wt)
+
+#add beta values into lrt table, match using transcript id
+all_ue_results <- left_join(sleuth_table, sleuth_results_wt, 
+                            by = "target_id", suffix = c(".lrt", ".wt"))
+View(all_ue_results)
+
+#delete unnecessary columns
+#all_oe_results <- select(all_oe_results, -c(test_stat, rss, degrees_free, mean_obs.lrt))
+
+#filter to genes with fold change of greater than 0.5 (abs) and q < 0.1
+all_ue_results <- filter(all_ue_results, (b > 0.5) | (b < -0.5))
+all_ue_results <- filter(all_ue_results, (qval.lrt < 0.1))
+View(all_ue_results)
+#1436 genes
+
+#organize column order
+all_ue_results <- relocate(all_ue_results, b, .after = qval.lrt)
+all_ue_results <- relocate(all_ue_results, symbol.wt)
+
+all_ue_results <- distinct(all_ue_results, by=symbol.wt, .keep_all = TRUE)
+
+#write to csv for further analysis
+fwrite(all_ue_results, "ue_results_fdr_0.1_b_0.5.csv")
+
+#join by symbol
+
+all_results <- inner_join(all_oe_results, all_ue_results, by = 'symbol.wt',  suffix = c(".oe", ".ue"))
+all_results <- distinct(all_results, by=symbol.wt, .keep_all = TRUE)
+View(all_results)
+
+fwrite(all_results, "all_genes_fdr_0.1_b_0.5.csv")
+
+#filter a different way
+#####
+all_oe_results <- left_join(oe_sleuth_table, sleuth_results_wt_oe, 
+                            by = "target_id", suffix = c(".lrt", ".wt"))
+all_oe_results <- distinct(all_oe_results, by=symbol, .keep_all = TRUE)
+all_oe_results <- filter(all_oe_results, (qval.lrt < 0.05))
+View(all_oe_results)
+
+####
+all_ue_results <- left_join(sleuth_table, sleuth_results_wt, 
+                            by = "target_id", suffix = c(".lrt", ".wt"))
+all_ue_results <- distinct(all_ue_results, by=symbol.wt, .keep_all = TRUE)
+all_ue_results <- filter(all_ue_results, (qval.lrt < 0.05))
+View(all_ue_results)
+
+####
