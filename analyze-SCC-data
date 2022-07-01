@@ -43,8 +43,14 @@ oe_ue_data <- oe_ue_data %>%
 
 View(oe_ue_data)
 
+#check tj and eya in data
+tj_eya_table <- filter(oe_ue_data, (symbol == "tj") | (symbol == "eya"))
+View(tj_eya_table)
+#tj is significantly differentially expressed (FDR < 0.05)
+#overexpressed with fc > 1 in oe
+#overexpressed with fc ~0.2 in ue
 
-
+#eya is insignificantly overexpressed in oe and underexpressed in ue
 
 #add in early scc_data
 scc_data <- full_join(oe_ue_data, early_scc_genes, by = 'symbol')
