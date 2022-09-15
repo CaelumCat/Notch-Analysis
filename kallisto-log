@@ -351,3 +351,29 @@ sys     0m4.641s
 less -S Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz 
 christine@pop-os:~$ less -S Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz | grep FBtr0070507
 >FBtr0070507 cdna primary_assembly:BDGP6.32:X:3134870:3172221:1 gene:FBgn0004647 gene_biotype:protein_coding transcript_biotype:protein_coding gene_symbol:N description:Notch
+
+
+
+#### new run for Adashev Analysis ####
+
+
+#gotta change some stuff for the single read files
+#LibraryLayout: SINGLE
+#https://0-www-ncbi-nlm-nih-gov.brum.beds.ac.uk/geo/query/acc.cgi?acc=GSE156479
+
+#unsorted tj reads
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_tj/SRR12476615.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_tj/SRR12476616.fastq.gz
+
+#sorted tj reads
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_tj/SRR12476617.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_tj/SRR12476618.fastq.gz
+
+## now switch to the eya data
+#unsorted eya
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_eya/SRR12476619.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_eya/SRR12476620.fastq.gz
+
+#sorted eya
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_eya/SRR12476621.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_eya/SRR12476622.fastq.gz
