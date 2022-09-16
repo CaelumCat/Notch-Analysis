@@ -361,19 +361,28 @@ christine@pop-os:~$ less -S Drosophila_melanogaster.BDGP6.32.cdna.all.fa.gz | gr
 #LibraryLayout: SINGLE
 #https://0-www-ncbi-nlm-nih-gov.brum.beds.ac.uk/geo/query/acc.cgi?acc=GSE156479
 
+#Single end reads
+#If your reads are single end only you can run kallisto by specifying the --single flag:
+
+#kallisto quant -i transcripts.idx -o output -b 100 --single -l 180 -s 20 reads_1.fastq.gz
+
+#however you must supply the length and standard deviation of the fragment length (not the read length).
+#i don't know this value so I'm just using what was in a kallisto tutorial.... (-l 180 -s 20)
+
 #unsorted tj reads
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_tj/SRR12476615.fastq.gz
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_tj/SRR12476616.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_tj/15 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/unsorted_tj/SRR12476615.fastq.gz 
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_tj/16 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/unsorted_tj/SRR12476616.fastq.gz
 
 #sorted tj reads
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_tj/SRR12476617.fastq.gz
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_tj -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_tj/SRR12476618.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_tj/17 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/sorted_tj/SRR12476617.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_tj/18 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/sorted_tj/SRR12476618.fastq.gz
 
 ## now switch to the eya data
 #unsorted eya
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_eya/SRR12476619.fastq.gz
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/unsorted_eya/SRR12476620.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_eya/19 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/unsorted_eya/SRR12476619.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/unsorted_eya/20 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/unsorted_eya/SRR12476620.fastq.gz
 
 #sorted eya
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_eya/SRR12476621.fastq.gz
-time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_eya -b 100 -t 4 --single /home/christine/Adashev_Analysis/sorted_eya/SRR12476622.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_eya/21 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/sorted_eya/SRR12476621.fastq.gz
+time kallisto quant -i /home/christine/index.idx -o /home/christine/Adashev_Analysis/sorted_eya/22 -b 100 -t 4 --single -l 180 -s 20 /home/christine/Adashev_Analysis/sorted_eya/SRR12476622.fastq.gz
+
